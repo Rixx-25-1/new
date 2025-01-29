@@ -1,0 +1,40 @@
+{
+  "user": [
+    {
+      "id": "2865",
+      "fullName": "Divya Jaiswal",
+      "email": "khusbu.thakkar@techextensor.com",
+      "password": "divya"
+    },
+    {
+      "id": "d226",
+      "fullName": "Divya Jaiswal",
+      "email": "divyajaiswal1631@gmail.com",
+      "password": "dd"
+    },
+    {
+      "id": "ee26",
+      "fullName": "Divya Jaiswal",
+      "email": "divyajaiswal1631@gmail.com",
+      "password": "dd"
+    },
+    {
+      "id": "cc69",
+      "fullName": "Divya Jaiswal",
+      "email": "divyajaiswal1631@gmail.com",
+      "password": "ss"
+    },
+    {
+      "id": "0f2c",
+      "fullName": "Divya Jaiswal",
+      "email": "khusbu.thakkar@techextensor.com",
+      "password": "aa"
+    },
+    {
+      "id": "b81b",
+      "fullName": "Divya Jaiswal",
+      "email": "divyatechextensor@gmail.com",
+      "password": "qq"
+    }
+  ]
+}
