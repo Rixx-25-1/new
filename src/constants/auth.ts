@@ -11,5 +11,6 @@ export const ERROR_MESSAGES = {
   export const AUTH_ROUTES = {
     LOGIN: 'auth/login',
     SIGN_UP: 'auth/signup',
-    DASHBOARD : 'auth/dashboard'
+    DASHBOARD : 'auth/dashboard',
+    FORGET : 'auth/forgetPassword'
   } as const;

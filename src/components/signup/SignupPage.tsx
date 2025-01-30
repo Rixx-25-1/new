@@ -15,7 +15,6 @@ interface SignUpFormData {
 }
 
 export const SignupPage = () => {
-
   const router = useRouter();
 
   const [formData, setFormData] = useState<SignUpFormData>({
@@ -29,14 +28,27 @@ export const SignupPage = () => {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
+  const handlePasswordBlur = (e: any) => {
+    validatePassword(e.target.value);
+  };
+
+  const [passwordValidationMessage, setPasswordValidationMessage] = useState<string>("");
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    //  validation
+    // validation
     if (formData.password !== formData.confirmPassword) {
       setError(ERROR_MESSAGES.PASSWORD_MISMATCH);
+      setLoading(false);
+      return;
+    }
+
+    // Perform password validation before sending request
+    if (passwordValidationMessage) {
+      setError(passwordValidationMessage);
       setLoading(false);
       return;
     }
@@ -47,26 +59,20 @@ export const SignupPage = () => {
       password: formData.password,
     };
 
-  
-
     try {
-      const response = await fetch("http://localhost:3004/user", {
+      const response = await fetch("http://localhost:3001/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(user),
-        //for testing
-        // body: JSON.stringify({ fullName: "Test", email: "test@example.com", password: "password123" }),
-        
       });
       console.log(response);
-      
 
       if (response.ok) {
-        // agar shi h to dashboard pe jayenge
+        // redirect to dashboard or show success
         // router.push(AUTH_ROUTES.DASHBOARD);
-        alert('Signup Successfully !!')
+        alert("Signup Successfully !!");
       } else {
         setError("Failed to register. Please try again.");
       }
@@ -75,6 +81,38 @@ export const SignupPage = () => {
       setError("An error occurred during registration.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  //Email validation
+  const validateEmail = (value: string) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailPattern.test(value)) {
+      setError(ERROR_MESSAGES.INVALID_EMAIL);
+    } else {
+      setError("");
+    }
+  };
+
+  const validatePassword = (password: string) => {
+    const minLength = 8;
+    const upperCaseRegex = /[A-Z]/;
+    const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (password.length < minLength) {
+      setPasswordValidationMessage(
+        "Password must be at least 8 characters long."
+      );
+    } else if (!upperCaseRegex.test(password)) {
+      setPasswordValidationMessage(
+        "Password must contain at least one uppercase letter."
+      );
+    } else if (!specialCharacterRegex.test(password)) {
+      setPasswordValidationMessage(
+        "Password must contain at least one special character."
+      );
+    } else {
+      setPasswordValidationMessage(""); // Valid password
     }
   };
 
@@ -139,9 +177,10 @@ export const SignupPage = () => {
               type="email"
               required
               value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
+              onChange={(e) => {
+                setFormData({ ...formData, email: e.target.value });
+              }}
+              onBlur={(e) => validateEmail(e.target.value)} // Email validation on blur
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="abc@example.com"
             />
@@ -161,12 +200,21 @@ export const SignupPage = () => {
               type="password"
               required
               value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
+              onChange={(e) => {
+                const password = e.target.value;
+                setFormData({ ...formData, password });
+                validatePassword(password); // Validate password on change
+              }} onBlur={(e) => validatePassword(e.target.value)}
+             
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="********"
             />
+            {/* Display password validation message */}
+            {passwordValidationMessage && (
+              <p className="text-sm text-red-600 mt-1">
+                {passwordValidationMessage}
+              </p>
+            )}
           </div>
 
           {/* Confirm Password Input */}
@@ -193,7 +241,7 @@ export const SignupPage = () => {
 
           {/* Terms and Conditions */}
           <div className="flex items-center">
-            <input  
+            <input
               id="acceptTerms"
               name="acceptTerms"
               type="checkbox"
@@ -228,19 +276,6 @@ export const SignupPage = () => {
             {loading ? "Creating account..." : "Sign up"}
           </button>
         </form>
-
-        {/* Sign In Link
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link
-              href={AUTH_ROUTES.LOGIN}
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
-              Sign in
-            </Link>
-          </p>
-        </div> */}
       </div>
     </div>
   );
