@@ -27,54 +27,55 @@ export const SignupPage = () => {
 
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [passwordValidationMessage, setPasswordValidationMessage] = useState<string>("");
 
   const handlePasswordBlur = (e: any) => {
     validatePassword(e.target.value);
   };
-
-  const [passwordValidationMessage, setPasswordValidationMessage] = useState<string>("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    // validation
     if (formData.password !== formData.confirmPassword) {
       setError(ERROR_MESSAGES.PASSWORD_MISMATCH);
       setLoading(false);
       return;
     }
 
-    // Perform password validation before sending request
     if (passwordValidationMessage) {
       setError(passwordValidationMessage);
       setLoading(false);
       return;
     }
 
-    const user = {
+    const payload = {
       fullName: formData.fullName,
       email: formData.email,
       password: formData.password,
     };
 
+    const isAdminRegistered = localStorage.getItem("isAdminRegistered");
+    const endpoint = isAdminRegistered ? "user" : "admin";
+
     try {
-      const response = await fetch("http://localhost:3001/user", {
+      const response = await fetch(`http://localhost:3001/${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(payload),
       });
-      console.log(response);
 
       if (response.ok) {
-        // redirect to dashboard or show success
-        // router.push(AUTH_ROUTES.DASHBOARD);
-        alert("Signup Successfully !!");
+        alert(`${isAdminRegistered ? "User" : "Admin"} Signup Successfully !!`);
+        
+        if (!isAdminRegistered) {
+          localStorage.setItem("isAdminRegistered", "true");
+        }
       } else {
-        setError("Failed to register. Please try again.");
+        setError(`Failed to register ${isAdminRegistered ? "user" : "admin"}. Please try again.`);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -84,7 +85,6 @@ export const SignupPage = () => {
     }
   };
 
-  //Email validation
   const validateEmail = (value: string) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!emailPattern.test(value)) {
@@ -100,53 +100,33 @@ export const SignupPage = () => {
     const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
 
     if (password.length < minLength) {
-      setPasswordValidationMessage(
-        "Password must be at least 8 characters long."
-      );
+      setPasswordValidationMessage("Password must be at least 8 characters long.");
     } else if (!upperCaseRegex.test(password)) {
-      setPasswordValidationMessage(
-        "Password must contain at least one uppercase letter."
-      );
+      setPasswordValidationMessage("Password must contain at least one uppercase letter.");
     } else if (!specialCharacterRegex.test(password)) {
-      setPasswordValidationMessage(
-        "Password must contain at least one special character."
-      );
+      setPasswordValidationMessage("Password must contain at least one special character.");
     } else {
-      setPasswordValidationMessage(""); // Valid password
+      setPasswordValidationMessage("");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-        {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Create an account
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Join us today and get started
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900">Create an account</h2>
+          <p className="mt-2 text-sm text-gray-600">Join us today and get started</p>
         </div>
 
-        {/* Error Message */}
         {error && (
-          <div
-            className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-            role="alert"
-          >
+          <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
             <span className="block sm:inline">{error}</span>
           </div>
         )}
 
-        {/* Form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {/* Full Name Input */}
           <div>
-            <label
-              htmlFor="fullName"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
               Full Name
             </label>
             <input
@@ -155,20 +135,14 @@ export const SignupPage = () => {
               type="text"
               required
               value={formData.fullName}
-              onChange={(e) =>
-                setFormData({ ...formData, fullName: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your name"
             />
           </div>
 
-          {/* Email Input */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input
@@ -177,21 +151,15 @@ export const SignupPage = () => {
               type="email"
               required
               value={formData.email}
-              onChange={(e) => {
-                setFormData({ ...formData, email: e.target.value });
-              }}
-              onBlur={(e) => validateEmail(e.target.value)} // Email validation on blur
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onBlur={(e) => validateEmail(e.target.value)}
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="abc@example.com"
             />
           </div>
 
-          {/* Password Input */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
@@ -203,26 +171,19 @@ export const SignupPage = () => {
               onChange={(e) => {
                 const password = e.target.value;
                 setFormData({ ...formData, password });
-                validatePassword(password); // Validate password on change
-              }} onBlur={(e) => validatePassword(e.target.value)}
-             
+                validatePassword(password);
+              }}
+              onBlur={(e) => validatePassword(e.target.value)}
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="********"
             />
-            {/* Display password validation message */}
             {passwordValidationMessage && (
-              <p className="text-sm text-red-600 mt-1">
-                {passwordValidationMessage}
-              </p>
+              <p className="text-sm text-red-600 mt-1">{passwordValidationMessage}</p>
             )}
           </div>
 
-          {/* Confirm Password Input */}
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
               Confirm Password
             </label>
             <input
@@ -231,15 +192,12 @@ export const SignupPage = () => {
               type="password"
               required
               value={formData.confirmPassword}
-              onChange={(e) =>
-                setFormData({ ...formData, confirmPassword: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               placeholder="••••••••"
             />
           </div>
 
-          {/* Terms and Conditions */}
           <div className="flex items-center">
             <input
               id="acceptTerms"
@@ -247,15 +205,10 @@ export const SignupPage = () => {
               type="checkbox"
               required
               checked={formData.acceptTerms}
-              onChange={(e) =>
-                setFormData({ ...formData, acceptTerms: e.target.checked })
-              }
+              onChange={(e) => setFormData({ ...formData, acceptTerms: e.target.checked })}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
-            <label
-              htmlFor="acceptTerms"
-              className="ml-2 block text-sm text-gray-900"
-            >
+            <label htmlFor="acceptTerms" className="ml-2 block text-sm text-gray-900">
               I agree to the{" "}
               <a href="#" className="text-blue-600 hover:text-blue-500">
                 Terms and Conditions
@@ -267,7 +220,6 @@ export const SignupPage = () => {
             </label>
           </div>
 
-          {/* Sign Up Button */}
           <button
             type="submit"
             disabled={loading}

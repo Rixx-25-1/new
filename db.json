@@ -175,5 +175,14 @@
       },
       "id": "7abf"
     }
-  ]
+  ],
+  "admin": [
+    {
+      "id": "16ba",
+      "fullName": "admin",
+      "email": "admin@example.com",
+      "password": "admin123@Admin"
+    }
+  ],
+  "books": []
 }

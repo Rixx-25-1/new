@@ -20,7 +20,7 @@ export const LoginPage = () => {
     email: "",
     password: "",
     rememberMe: false,
-  });
+  }); 
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +34,7 @@ export const LoginPage = () => {
       // Redirect to dashboard after successful login
       if(result.success){
         alert(`Login Successfully for ${result.user.email}`)
-        router.push(AUTH_ROUTES.DASHBOARD);
+        // router.push(AUTH_ROUTES.DASHBOARD);
       }
       else{
         setError('Inavlid email or password entered');
@@ -197,6 +197,13 @@ export const LoginPage = () => {
               className="font-medium text-blue-600 hover:text-blue-500"
             >
               Sign up
+            </Link>
+            <br/>
+            <Link
+              href={AUTH_ROUTES.ADMIN}
+              className="font-medium text-green-600 hover:text-green-500"
+            >
+              Login as Admin
             </Link>
           </p>
         </div>

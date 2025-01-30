@@ -9,8 +9,9 @@ export const ERROR_MESSAGES = {
   } as const; 
 
   export const AUTH_ROUTES = {
-    LOGIN: 'auth/login',
-    SIGN_UP: 'auth/signup',
-    DASHBOARD : 'auth/dashboard',
-    FORGET : 'auth/forgetPassword'
+    LOGIN: '/auth/login',
+    SIGN_UP: '/auth/signup',
+    FORGET : '/auth/forgetPassword',
+    ADMIN: '/auth/admin',
+    ADMIN_DASHBOARD : '/admin/dashboard'
   } as const;
