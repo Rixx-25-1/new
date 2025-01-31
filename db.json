@@ -1,179 +1,10 @@
 {
   "user": [
     {
-      "id": "2865",
-      "fullName": "Divya Jaiswal",
-      "email": "khusbu.thakkar@techextensor.com",
-      "password": "divya"
-    },
-    {
-      "id": "d226",
+      "id": "6456",
       "fullName": "Divya Jaiswal",
       "email": "divyajaiswal1631@gmail.com",
-      "password": "dd"
-    },
-    {
-      "id": "ee26",
-      "fullName": "Divya Jaiswal",
-      "email": "divyajaiswal1631@gmail.com",
-      "password": "dd"
-    },
-    {
-      "id": "cc69",
-      "fullName": "Divya Jaiswal",
-      "email": "divyajaiswal1631@gmail.com",
-      "password": "ss"
-    },
-    {
-      "id": "0f2c",
-      "fullName": "Divya Jaiswal",
-      "email": "khusbu.thakkar@techextensor.com",
-      "password": "aa"
-    },
-    {
-      "id": "b81b",
-      "fullName": "Divya Jaiswal",
-      "email": "divyatechextensor@gmail.com",
-      "password": "qq"
-    },
-    {
-      "id": "fe62",
-      "fullName": "divi",
-      "email": "khusbu.thakkar@techextensor.com",
-      "password": "DJ@12345678"
-    },
-    {
-      "id": "fcab",
-      "fullName": "divi",
-      "email": "divyajaiswal1631@gmail.com",
-      "password": "dsd"
-    },
-    {
-      "id": "9589",
-      "fullName": "nidhi",
-      "email": "nidhi@gmail.com",
-      "password": "nidhi1233"
-    },
-    {
-      "id": "ca85",
-      "fullName": "nidhi yadav",
-      "email": "yadavnidhi@gmail.com",
-      "password": "N@yabcdef"
-    },
-    {
-      "id": "4baa",
-      "email": "divyajaiswal@gmail.com",
-      "newPassword": "qq"
-    },
-    {
-      "id": "2aac",
-      "email": "divyajaiswal@gmail.com",
-      "newPassword": "qq"
-    },
-    {
-      "id": "d644",
-      "email": "divyajaiswal@gmail.com",
-      "newPassword": "qq"
-    },
-    {
-      "id": "6511",
-      "email": "divyajaiswal@gmail.com",
-      "newPassword": "qq"
-    },
-    {
-      "id": "49d2",
-      "fullName": "abc",
-      "email": "abc@gmail.com",
-      "password": "Divya@jaiswal"
-    },
-    {
-      "0": {
-        "id": "2865",
-        "fullName": "Divya Jaiswal",
-        "email": "khusbu.thakkar@techextensor.com",
-        "password": "divya"
-      },
-      "1": {
-        "id": "d226",
-        "fullName": "Divya Jaiswal",
-        "email": "divyajaiswal1631@gmail.com",
-        "password": "dd"
-      },
-      "2": {
-        "id": "ee26",
-        "fullName": "Divya Jaiswal",
-        "email": "divyajaiswal1631@gmail.com",
-        "password": "dd"
-      },
-      "3": {
-        "id": "cc69",
-        "fullName": "Divya Jaiswal",
-        "email": "divyajaiswal1631@gmail.com",
-        "password": "ss"
-      },
-      "4": {
-        "id": "0f2c",
-        "fullName": "Divya Jaiswal",
-        "email": "khusbu.thakkar@techextensor.com",
-        "password": "aa"
-      },
-      "5": {
-        "id": "b81b",
-        "fullName": "Divya Jaiswal",
-        "email": "divyatechextensor@gmail.com",
-        "password": "qq"
-      },
-      "6": {
-        "id": "fe62",
-        "fullName": "divi",
-        "email": "khusbu.thakkar@techextensor.com",
-        "password": "DJ@12345678"
-      },
-      "7": {
-        "id": "fcab",
-        "fullName": "divi",
-        "email": "divyajaiswal1631@gmail.com",
-        "password": "dsd"
-      },
-      "8": {
-        "id": "9589",
-        "fullName": "nidhi",
-        "email": "nidhi@gmail.com",
-        "password": "nidhi1233"
-      },
-      "9": {
-        "id": "ca85",
-        "fullName": "nidhi yadav",
-        "email": "yadavnidhi@gmail.com",
-        "password": "N@yabcdef"
-      },
-      "10": {
-        "id": "4baa",
-        "email": "divyajaiswal@gmail.com",
-        "newPassword": "qq"
-      },
-      "11": {
-        "id": "2aac",
-        "email": "divyajaiswal@gmail.com",
-        "newPassword": "qq"
-      },
-      "12": {
-        "id": "d644",
-        "email": "divyajaiswal@gmail.com",
-        "newPassword": "qq"
-      },
-      "13": {
-        "id": "6511",
-        "email": "divyajaiswal@gmail.com",
-        "newPassword": "qq"
-      },
-      "14": {
-        "id": "49d2",
-        "fullName": "abc",
-        "email": "abc@gmail.com",
-        "password": "123"
-      },
-      "id": "7abf"
+      "password": "@Divi1234"
     }
   ],
   "admin": [
@@ -184,5 +15,14 @@
       "password": "admin123@Admin"
     }
   ],
-  "books": []
+  "books": [
+    {
+      "id": "f635",
+      "title": "book 1",
+      "author": "divyaa",
+      "isbn": "abcsss",
+      "quantity": 10,
+      "status": "Available"
+    }
+  ]
 }

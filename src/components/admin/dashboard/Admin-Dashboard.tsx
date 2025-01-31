@@ -6,7 +6,7 @@ interface Book {
   title: string;
   author: string;
   isbn: string;
-  quantity: number;
+  quantity: string;
   status: string;
 }
 
@@ -19,7 +19,7 @@ const AdminDashboard = () => {
     title: '',
     author: '',
     isbn: '',
-    quantity: 0,
+    quantity: '',
     status: 'Available',
   });
 
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
   const handleAddBookToggle = () => {
     setIsFormOpen(!isFormOpen);
     setIsEditing(false);
-    setNewBook({ id: 0, title: '', author: '', isbn: '', quantity: 0, status: 'Available' });
+    setNewBook({ id: 0, title: '', author: '', isbn: '', quantity: '', status: 'Available' });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,88 +52,85 @@ const AdminDashboard = () => {
   };
 
   const handleAddBook = async () => {
-    const bookData = {
-      ...newBook,
-      id: Date.now(),
-    };
-
-    try {
+    const bookData = { ...newBook, id: undefined }; //by id: undefined , json-server automatically generates id to book 
+  
+    try {   
       const response = await fetch('http://localhost:3001/books', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookData),
       });
-
+  
       if (response.ok) {
+        fetchBooks(); // Refresh book list
         setIsFormOpen(false);
-        setNewBook({ id: 0, title: '', author: '', isbn: '', quantity: 0, status: 'Available' });
-        fetchBooks();
+        setNewBook({ id: 0, title: '', author: '', isbn: '', quantity: '', status: 'Available' });
       }
     } catch (error) {
       console.error('Error adding book:', error);
     }
   };
+  
 
-  const handleEditBook = (book: Book) => {
-    setCurrentBookId(book.id);
-    setIsEditing(true);
-    setIsFormOpen(true);
-    setNewBook(book);
-  };
 
   const handleUpdateBook = async () => {
-    if (currentBookId === null) return;
-
+    if (currentBookId === null) return; // Ensure  ID exists
+  
     try {
       const response = await fetch(`http://localhost:3001/books/${currentBookId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newBook),
+        body: JSON.stringify(newBook), // Send updated book 
       });
-
-    //   if (response.ok) {
-    //     await   fetchBooks();
-    //     setIsFormOpen(false);
-    //     setIsEditing(false);
-    //     setCurrentBookId(null);
-     
-    //   }
-    if (response.ok) {
-        setBooks((prevBooks) => 
-          prevBooks.map(book => book.id === currentBookId ? newBook : book)
-        );
-        setIsFormOpen(false);
-        setIsEditing(false);
-        setCurrentBookId(null);
+  
+      if (response.ok) {
+        fetchBooks(); 
+        setIsFormOpen(false); 
+        setIsEditing(false); 
+        setCurrentBookId(null); 
+        alert('Book updated')
       }
     } catch (error) {
       console.error('Error updating book:', error);
     }
-    console.log(newBook); //for debugging 
-        
   };
+  
+  
 
   const handleCancel = () => {
-    setNewBook({ id: 0, title: '', author: '', isbn: '', quantity: 0, status: 'Available' });
+    setNewBook({ id: 0, title: '', author: '', isbn: '', quantity: '', status: 'Available' });
     setIsFormOpen(false);
     setIsEditing(false);
   };
 
+  const handleEditBook = (book:Book) =>{
+    setNewBook(book);
+    setIsFormOpen(true) //form open
+    setIsEditing(true)
+    setCurrentBookId(book.id)
 
+
+  }
   const handleDeleteBook = async (id: number) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this book?");
+    if (!confirmDelete) return; 
     try {
       const response = await fetch(`http://localhost:3001/books/${id}`, {
         method: 'DELETE',
       });
   
       if (response.ok) {
-        // Remove the deleted book from the state
-        setBooks((prevBooks) => prevBooks.filter(book => book.id !== id));
+        setBooks(books.filter(book => book.id !== id)); 
+        alert('Book deleted successfully')
       }
     } catch (error) {
       console.error('Error deleting book:', error);
     }
   };
+  
+
+  
+  
   
 
   return (
@@ -251,14 +248,14 @@ const AdminDashboard = () => {
                 <td className="border px-4 py-2">{book.quantity}</td>
                 <td className="border px-4 py-2">{book.status}</td>
                 <td className="border px-4 py-2">
-                  <button
-                    onClick={() => handleEditBook(book)}
+                  <button onClick={()=>handleEditBook(book)}
+                    
                     className="bg-yellow-500 gap-2 text-white px-6 py-2 rounded-lg transition-all mb-4 mr-4"
                   >
                     Edit
                   </button>
-                  <button
-  onClick={() => handleDeleteBook(book.id)}
+                  <button onClick={()=>handleDeleteBook(book.id)}
+ 
   className="bg-red-500 text-white px-6 py-2 rounded-lg transition-all mb-4"
 >
   Delete
