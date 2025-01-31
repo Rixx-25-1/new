@@ -18,10 +18,26 @@
   "books": [
     {
       "id": "f635",
-      "title": "book 1",
-      "author": "divyaa",
+      "title": "book1",
+      "author": "divyaajaiswal",
       "isbn": "abcsss",
       "quantity": 10,
+      "status": "Available"
+    },
+    {
+      "id": "a8fc",
+      "title": "book 2",
+      "author": "nidhi",
+      "isbn": "xyz",
+      "quantity": 2,
+      "status": "Available"
+    },
+    {
+      "id": "d706",
+      "title": "fiction",
+      "author": "Mr.X",
+      "isbn": "1234",
+      "quantity": 8,
       "status": "Available"
     }
   ]
