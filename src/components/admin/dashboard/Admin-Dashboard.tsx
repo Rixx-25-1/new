@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 
 interface Book {
@@ -131,7 +132,7 @@ const AdminDashboard = () => {
 
     try {
       const response = await fetch(
-        'http://localhost:3001/books/${currentBookId}',
+        `http://localhost:3001/books/${currentBookId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -176,7 +177,7 @@ const AdminDashboard = () => {
     );
     if (!confirmDelete) return;
     try {
-      const response = await fetch('http://localhost:3001/books/${id}', {
+      const response = await fetch(`http://localhost:3001/books/${id}`, {
         method: "DELETE",
       });
 
@@ -203,7 +204,7 @@ const AdminDashboard = () => {
 
   //user search for issueing-book
   const [userSearchQuery, setUserSearchQuery] = useState("");  //admin input
-const [searchedUser, setSearchedUser] = useState<{ id: number; name: string } | null>(null);  // Stores matched user
+const [searchedUser, setSearchedUser] = useState<{ id: number; fullName: string } | null>(null);  // Stores matched user
 
 const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
@@ -217,6 +218,8 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const response = await fetch("http://localhost:3001/user");
       const users = await response.json();
+      console.log(users);
+      
   
       const foundUser = users.find((user: { fullName: string }) =>
         user.fullName.toLowerCase().includes(query)
@@ -231,6 +234,67 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
       console.error("Error searching user:", error);
     }
   };
+
+  //if the user exists the book detail and user will store in the db.json/issue-books 
+  const handleIssueBook = async () => {
+    if (!searchedUser) {
+      alert("You have to create the account first!");
+      return;
+    }
+  
+    // Find the book in the list
+    const bookToIssue = books.find((book) => book.isbn === issueDetails.bookId);
+  
+    if (!bookToIssue) {
+      alert("Book not found!");
+      return;
+    }
+  
+    if (bookToIssue.quantity <= 0) {
+      alert("Book is out of stock!");
+      return;
+    }
+  
+    const issueData = {
+      userId: searchedUser.id,
+      userName: searchedUser.fullName,
+      bookName: issueDetails.bookName,
+      bookId: issueDetails.bookId,
+      issueDate: issueDetails.issueDate,
+      dueDate: issueDetails.dueDate,
+    };
+  
+    try {
+      // Issue book (store in issue-books)
+      const response = await fetch("http://localhost:3001/issue-book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(issueData),
+      });
+  
+      if (response.ok) {
+        // Reduce book quantity by 1
+        const updatedQuantity = bookToIssue.quantity - 1;
+  
+        await fetch(`http://localhost:3001/books/${bookToIssue.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...bookToIssue, quantity: updatedQuantity }),
+        });
+  
+        alert("Book issued successfully!");
+        setIsIssueFormOpen(false);
+        setUserSearchQuery(""); // Reset search input
+        setSearchedUser(null);
+        fetchBooks(); // Refresh book list
+      }
+    } catch (error) {
+      console.error("Error issuing book:", error);
+    }
+  };
+  
+
+  
   
 
 
@@ -353,7 +417,7 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
   </label>
   {/* Show Found User */}
   {searchedUser ? (
-          <p className="text-green-600 mb-4">Selected: {searchedUser.name}</p>
+          <p className="text-green-600 mb-4">Selected: {searchedUser.fullName}</p>
         ) : (
           userSearchQuery && (
             <p className="text-red-600 mb-4">User not found! Please create an account.</p>
@@ -414,6 +478,7 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
           <button
             type="button"
             className="bg-blue-500 text-white px-6 py-2 rounded-lg"
+            onClick={handleIssueBook}
           >
             Submit
           </button>

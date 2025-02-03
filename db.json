@@ -27,15 +27,7 @@
       "title": "book1",
       "author": "divyaajaiswal",
       "isbn": "abcsss",
-      "quantity": 10,
-      "status": "Available"
-    },
-    {
-      "id": "a8fc",
-      "title": "book 2",
-      "author": "nidhi",
-      "isbn": "xyz",
-      "quantity": 2,
+      "quantity": 9,
       "status": "Available"
     },
     {
@@ -44,22 +36,6 @@
       "author": "Mr.X",
       "isbn": "1234",
       "quantity": 8,
-      "status": "Available"
-    },
-    {
-      "id": "360c",
-      "title": "book 3",
-      "author": "dj",
-      "isbn": "cool",
-      "quantity": 10,
-      "status": "Available"
-    },
-    {
-      "id": "49e7",
-      "title": "fs",
-      "author": "dd",
-      "isbn": "ds",
-      "quantity": 10,
       "status": "Available"
     }
   ],
