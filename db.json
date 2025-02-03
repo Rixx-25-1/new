@@ -5,6 +5,12 @@
       "fullName": "Divya Jaiswal",
       "email": "divyajaiswal1631@gmail.com",
       "password": "@Divi1234"
+    },
+    {
+      "id": "92de",
+      "fullName": "nidhi yadav",
+      "email": "nidhi123@gmail.com",
+      "password": "Nidhi@yadav"
     }
   ],
   "admin": [
@@ -34,11 +40,28 @@
     },
     {
       "id": "d706",
-      "title": "fiction",
+      "title": "fiction book",
       "author": "Mr.X",
       "isbn": "1234",
       "quantity": 8,
       "status": "Available"
+    },
+    {
+      "id": "360c",
+      "title": "book 3",
+      "author": "dj",
+      "isbn": "cool",
+      "quantity": 10,
+      "status": "Available"
+    },
+    {
+      "id": "49e7",
+      "title": "fs",
+      "author": "dd",
+      "isbn": "ds",
+      "quantity": 10,
+      "status": "Available"
     }
-  ]
+  ],
+  "issue-book": []
 }
