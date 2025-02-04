@@ -13,5 +13,8 @@ export const ERROR_MESSAGES = {
     SIGN_UP: '/auth/signup',
     FORGET : '/auth/forgetPassword',
     ADMIN: '/auth/admin',
-    ADMIN_DASHBOARD : '/admin/dashboard'
+    ADMIN_DASHBOARD : '/admin/dashboard',
+    USER_DETAILS :'/admin/user-screen',
+    ISSUE_BOOK : '/admin/issue-book',
+    USER_DASHBOARD: '/user/dashboard'
   } as const;

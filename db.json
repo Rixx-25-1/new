@@ -1,16 +1,38 @@
 {
   "user": [
     {
-      "id": "6456",
-      "fullName": "Divya Jaiswal",
-      "email": "divyajaiswal1631@gmail.com",
-      "password": "@Divi1234"
-    },
-    {
       "id": "92de",
-      "fullName": "nidhi yadav",
+      "fullName": "nidhi yadavv",
       "email": "nidhi123@gmail.com",
       "password": "Nidhi@yadav"
+    },
+    {
+      "id": "986c",
+      "fullName": "Anjali Joshii",
+      "email": "anjali123@gmail.com",
+      "password": "@Anjali123"
+    },
+    {
+      "id": "66c2",
+      "fullName": "Shivani Bhadoriya",
+      "email": "shivanibhadoriya123@gmail.com",
+      "password": "@Shivani123"
+    },
+    {
+      "id": "1ac2",
+      "fullName": "Riya karnik",
+      "email": "riyakarnik123@gmail.com",
+      "password": "@Riya123"
+    },
+    {
+      "id": "5eaf",
+      "fullName": "bhavya",
+      "email": "bhavya22@gmail.com"
+    },
+    {
+      "id": "ebfa",
+      "fullName": "Ayushi",
+      "email": "ayushi04@gmail.com"
     }
   ],
   "admin": [
@@ -27,7 +49,7 @@
       "title": "book1",
       "author": "divyaajaiswal",
       "isbn": "abcsss",
-      "quantity": 9,
+      "quantity": 8,
       "status": "Available"
     },
     {
@@ -35,9 +57,70 @@
       "title": "fiction book",
       "author": "Mr.X",
       "isbn": "1234",
-      "quantity": 8,
+      "quantity": 7,
+      "status": "Available"
+    },
+    {
+      "id": "11c0",
+      "title": "Horror Book",
+      "author": "Anabelle",
+      "isbn": "ghost",
+      "quantity": 3,
+      "status": "Available"
+    },
+    {
+      "id": "50d7",
+      "title": "Funny Book",
+      "author": "John",
+      "isbn": "joker",
+      "quantity": 7,
+      "status": "Available"
+    },
+    {
+      "id": "4e7d",
+      "title": "comdey",
+      "author": "mr.Gada",
+      "isbn": "tmkoc",
+      "quantity": 13,
       "status": "Available"
     }
   ],
-  "issue-book": []
+  "issue-book": [
+    {
+      "id": "9358",
+      "userId": "1ac2",
+      "userName": "Riya karnik",
+      "bookName": "comdey",
+      "ISBN": "tmkoc",
+      "issueDate": "2025-02-04",
+      "dueDate": "2025-02-11"
+    },
+    {
+      "id": "28c7",
+      "userId": "66c2",
+      "userName": "Shivani Bhadoriya",
+      "bookName": "fiction book",
+      "ISBN": "1234",
+      "issueDate": "2025-02-04",
+      "dueDate": "2025-02-05"
+    },
+    {
+      "id": "8b62",
+      "userId": "ebfa",
+      "userName": "Ayushi",
+      "bookName": "Horror Book",
+      "ISBN": "ghost",
+      "issueDate": "2025-02-04",
+      "dueDate": "2025-02-13"
+    },
+    {
+      "id": "da1c",
+      "userId": "1ac2",
+      "userName": "Riya karnik",
+      "bookName": "Horror Book",
+      "ISBN": "ghost",
+      "issueDate": "2025-02-04",
+      "dueDate": "2025-02-14"
+    }
+  ]
 }

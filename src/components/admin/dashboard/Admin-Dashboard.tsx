@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AUTH_ROUTES } from "@/constants/auth";
 
 interface Book {
   id: number;
@@ -21,7 +23,7 @@ const AdminDashboard = () => {
   const [isIssueFormOpen, setIsIssueFormOpen] = useState(false);
   const [issueDetails, setIssueDetails] = useState({
     bookName: "",
-    bookId: "",
+    ISBN: "",
     issueDate: new Date().toISOString().split("T")[0], // Default to current date
     dueDate: "",
   });
@@ -194,37 +196,38 @@ const AdminDashboard = () => {
   const handleIssueBookClick = (book: Book) => {
     setIssueDetails({
       bookName: book.title,
-      bookId: book.isbn,
+      ISBN: book.isbn,
       issueDate: new Date().toISOString().split("T")[0], // Current Date
       dueDate: "",
     });
     setIsIssueFormOpen(true);
   };
-  
 
   //user search for issueing-book
-  const [userSearchQuery, setUserSearchQuery] = useState("");  //admin input
-const [searchedUser, setSearchedUser] = useState<{ id: number; fullName: string } | null>(null);  // Stores matched user
+  const [userSearchQuery, setUserSearchQuery] = useState(""); //admin input
+  const [searchedUser, setSearchedUser] = useState<{
+    id: number;
+    fullName: string;
+  } | null>(null); // Stores matched user
 
-const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
     setUserSearchQuery(query);
-  
+
     if (!query) {
       setSearchedUser(null); // Reset if input is empty
       return;
     }
-  
+
     try {
       const response = await fetch("http://localhost:3001/user");
       const users = await response.json();
       console.log(users);
-      
-  
+
       const foundUser = users.find((user: { fullName: string }) =>
         user.fullName.toLowerCase().includes(query)
       );
-  
+
       if (foundUser) {
         setSearchedUser(foundUser);
       } else {
@@ -235,35 +238,35 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     }
   };
 
-  //if the user exists the book detail and user will store in the db.json/issue-books 
+  //if the user exists the book detail and user will store in the db.json/issue-books
   const handleIssueBook = async () => {
     if (!searchedUser) {
       alert("You have to create the account first!");
       return;
     }
-  
+
     // Find the book in the list
-    const bookToIssue = books.find((book) => book.isbn === issueDetails.bookId);
-  
+    const bookToIssue = books.find((book) => book.isbn === issueDetails.ISBN);
+
     if (!bookToIssue) {
       alert("Book not found!");
       return;
     }
-  
+
     if (bookToIssue.quantity <= 0) {
       alert("Book is out of stock!");
       return;
     }
-  
+
     const issueData = {
       userId: searchedUser.id,
       userName: searchedUser.fullName,
       bookName: issueDetails.bookName,
-      bookId: issueDetails.bookId,
+      ISBN: issueDetails.ISBN,
       issueDate: issueDetails.issueDate,
       dueDate: issueDetails.dueDate,
     };
-  
+
     try {
       // Issue book (store in issue-books)
       const response = await fetch("http://localhost:3001/issue-book", {
@@ -271,17 +274,17 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(issueData),
       });
-  
+
       if (response.ok) {
         // Reduce book quantity by 1
         const updatedQuantity = bookToIssue.quantity - 1;
-  
+
         await fetch(`http://localhost:3001/books/${bookToIssue.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...bookToIssue, quantity: updatedQuantity }),
         });
-  
+
         alert("Book issued successfully!");
         setIsIssueFormOpen(false);
         setUserSearchQuery(""); // Reset search input
@@ -292,11 +295,12 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
       console.error("Error issuing book:", error);
     }
   };
-  
 
-  
-  
-
+  //Navigate to the user-screen
+  const router = useRouter();
+  const handleUserNavigation = () =>{
+    router.push(AUTH_ROUTES.USER_DETAILS)
+  }
 
   return (
     <div className="container mx-auto p-6">
@@ -315,6 +319,11 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
         value={searchQuery}
         onChange={handleSearch}
       />
+
+      <button onClick={handleUserNavigation}
+       className="bg-pink-400 text-white px-6 py-2 rounded-lg hover:bg-pink-500 transition-all mb-4 fixed top-4 right-4">
+        See All Users
+      </button>
 
       {isFormOpen && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
@@ -398,97 +407,101 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
         </div>
       )}
 
+      {isIssueFormOpen && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Issue Book</h2>
+            <form>
+              <label className="block mb-2">
+                {/* user search  Input*/}
+                Select User:
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 border rounded-lg mb-4"
+                  placeholder="Search user by name"
+                  value={userSearchQuery}
+                  onChange={handleUserSearch}
+                />
+              </label>
+              {/* Show Found User */}
+              {searchedUser ? (
+                <p className="text-green-600 mb-4">
+                  Selected: {searchedUser.fullName}
+                </p>
+              ) : (
+                userSearchQuery && (
+                  <p className="text-red-600 mb-4">
+                    User not found! Please create an account.
+                  </p>
+                )
+              )}
 
-{isIssueFormOpen && (
-  <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-      <h2 className="text-xl font-semibold mb-4">Issue Book</h2>
-      <form>
-      <label className="block mb-2">
-        {/* user search  Input*/}
-  Select User:
-  <input
-    type="text"
-    className="w-full px-4 py-2 border rounded-lg mb-4"
-    placeholder="Search user by name"
-    value={userSearchQuery}
-    onChange={handleUserSearch}
-  />
-  </label>
-  {/* Show Found User */}
-  {searchedUser ? (
-          <p className="text-green-600 mb-4">Selected: {searchedUser.fullName}</p>
-        ) : (
-          userSearchQuery && (
-            <p className="text-red-600 mb-4">User not found! Please create an account.</p>
-          )
-        )}
-
-        <label className="block mb-2">
-          Book Name:
-          <input
-            type="text"
-            name="bookName"
-            value={issueDetails.bookName}
-            readOnly
-            className="w-full px-4 py-2 border rounded-lg mb-4 bg-gray-100"
-          />
-        </label>
-        <label className="block mb-2">
-          Book ID (ISBN):
-          <input
-            type="text"
-            name="bookId"
-            value={issueDetails.bookId}
-            readOnly
-            className="w-full px-4 py-2 border rounded-lg mb-4 bg-gray-100"
-          />
-        </label>
-        <label className="block mb-2">
-          Issue Date:
-          <input
-            type="date"
-            name="issueDate"
-            value={issueDetails.issueDate}
-            readOnly
-            className="w-full px-4 py-2 border rounded-lg mb-4 bg-gray-100"
-          />
-        </label>
-        <label className="block mb-2">
-          Due Date:
-          <input
-            type="date"
-            name="dueDate"
-            value={issueDetails.dueDate}
-            onChange={(e) =>
-              setIssueDetails({ ...issueDetails, dueDate: e.target.value })
-            }
-            required
-            className="w-full px-4 py-2 border rounded-lg mb-4"
-          />
-        </label>
-        <div className="flex justify-between">
-        <button
-            type="button"
-            onClick={() => setIsIssueFormOpen(false)}
-            className="bg-gray-500 text-white px-6 py-2 rounded-lg"
-          >
-            Cancel
-          </button> 
-          <button
-            type="button"
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg"
-            onClick={handleIssueBook}
-          >
-            Submit
-          </button>
-          
+              <label className="block mb-2">
+                Book Name:
+                <input
+                  type="text"
+                  name="bookName"
+                  value={issueDetails.bookName}
+                  readOnly
+                  className="w-full px-4 py-2 border rounded-lg mb-4 bg-gray-100"
+                />
+              </label>
+              <label className="block mb-2">
+                Book ID (ISBN):
+                <input
+                  type="text"
+                  name="bookId"
+                  value={issueDetails.ISBN}
+                  readOnly
+                  className="w-full px-4 py-2 border rounded-lg mb-4 bg-gray-100"
+                />
+              </label>
+              <label className="block mb-2">
+                Issue Date:
+                <input
+                  type="date"
+                  name="issueDate"
+                  value={issueDetails.issueDate}
+                  readOnly
+                  className="w-full px-4 py-2 border rounded-lg mb-4 bg-gray-100"
+                />
+              </label>
+              <label className="block mb-2">
+                Due Date:
+                <input
+                  type="date"
+                  name="dueDate"
+                  value={issueDetails.dueDate}
+                  onChange={(e) =>
+                    setIssueDetails({
+                      ...issueDetails,
+                      dueDate: e.target.value,
+                    })
+                  }
+                  required
+                  className="w-full px-4 py-2 border rounded-lg mb-4"
+                />
+              </label>
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={() => setIsIssueFormOpen(false)}
+                  className="bg-gray-500 text-white px-6 py-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="bg-blue-500 text-white px-6 py-2 rounded-lg"
+                  onClick={handleIssueBook}
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
-    </div>
-  </div>
-)}
-
+      )}
 
       <div className="overflow-x-auto mt-6">
         <table className="w-full table-auto border-collapse border border-gray-200">
@@ -523,7 +536,12 @@ const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   >
                     Delete
                   </button>
-                  <button onClick={()=>{handleIssueBookClick(book)}} className="bg-green-500 gap-2 text-white px-6 rounded-lg py-2 transition-all mb-2">
+                  <button
+                    onClick={() => {
+                      handleIssueBookClick(book);
+                    }}
+                    className="bg-green-500 gap-2 text-white px-6 rounded-lg py-2 transition-all mb-2"
+                  >
                     Issue
                   </button>
                 </td>

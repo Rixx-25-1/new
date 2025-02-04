@@ -8,7 +8,7 @@ import { AUTH_ROUTES } from "@/constants/auth";
 import { validateUser } from "@/utils/api"; 
 
 export const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(""); 
   const [error, setError] = useState("");
 
   const [password, setPassword] = useState("");
@@ -34,7 +34,7 @@ export const LoginPage = () => {
       // Redirect to dashboard after successful login
       if(result.success){
         alert(`Login Successfully for ${result.user.email}`)
-        // router.push(AUTH_ROUTES.DASHBOARD);
+        router.push(AUTH_ROUTES.USER_DASHBOARD)
       }
       else{
         setError('Inavlid email or password entered');
@@ -70,6 +70,8 @@ export const LoginPage = () => {
   const handlePasswordBlur = (e: any) => {
     validatePassword(e.target.value);
   };
+
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
@@ -181,7 +183,8 @@ export const LoginPage = () => {
           </div>
 
           {/* Login In Button */}
-          <button
+          <button 
+
             type="submit"
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
