@@ -5,14 +5,14 @@ import { ERROR_MESSAGES } from "@/constants/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AUTH_ROUTES } from "@/constants/auth";
-import { validateUser } from "@/utils/api"; 
+import { validateUser } from "@/utils/api";
 
 export const LoginPage = () => {
-  const [email, setEmail] = useState(""); 
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
   const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  // const [passwordError, setPasswordError] = useState("");
 
   const router = useRouter();
 
@@ -20,26 +20,32 @@ export const LoginPage = () => {
     email: "",
     password: "",
     rememberMe: false,
-  }); 
+  });
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // console.log("Form submitted:", formData);
 
-    if (!error && !passwordError && email && password) {
-    //   console.log("Form submitted:", { email, password });
-    const result = await validateUser(email, password);
-
+    if (!error && email && password) {
+      //   console.log("Form submitted:", { email, password });
+      const result = await validateUser(email, password);
 
       // Redirect to dashboard after successful login
-      if(result.success){
-        alert(`Login Successfully for ${result.user.email}`)
-        router.push(AUTH_ROUTES.USER_DASHBOARD)
+      if (result.success) {
+        alert(`Login Successfully for ${result.user.email}`);
+        console.log("user data:", result.user);
+
+        // Store user data in localStorage
+        localStorage.setItem("userId", result.user.id || "");
+        localStorage.setItem("username", result.user.fullName || "");
+
+        console.log("User ID:", result.user.id);
+        console.log("Username:", result.user.fullName);
+
+        router.push(AUTH_ROUTES.USER_DASHBOARD);
+      } else {
+        setError("Inavlid email or password entered");
       }
-      else{
-        setError('Inavlid email or password entered');
-      }
-     
     }
   };
 
@@ -58,20 +64,18 @@ export const LoginPage = () => {
 
   //Validation of the password
 
-  const validatePassword = (value: any) => {
-    const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{8,}$/;
-    if (!passwordPattern.test(value)) {
-      setPasswordError(ERROR_MESSAGES.PASSWORD_TYPE);
-    } else {
-      setPasswordError("");
-    }
-  };
+  // const validatePassword = (value: any) => {
+  //   const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{8,}$/;
+  //   if (!passwordPattern.test(value)) {
+  //     setPasswordError(ERROR_MESSAGES.PASSWORD_TYPE);
+  //   } else {
+  //     setPasswordError("");
+  //   }
+  // };
 
-  const handlePasswordBlur = (e: any) => {
-    validatePassword(e.target.value);
-  };
-
-  
+  // const handlePasswordBlur = (e: any) => {
+  //   validatePassword(e.target.value);
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
@@ -124,14 +128,14 @@ export const LoginPage = () => {
                 name="password"
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
-                onBlur={handlePasswordBlur}
+                // onBlur={handlePasswordBlur}
                 required
                 className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="********"
               />
-              {passwordError && (
+              {/* {passwordError && (
                 <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -176,15 +180,17 @@ export const LoginPage = () => {
             </div>
 
             <div className="text-sm">
-             <Link href={AUTH_ROUTES.FORGET} className="font-medium text-blue-600 hover:text-blue-500">
+              <Link
+                href={AUTH_ROUTES.FORGET}
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
                 Forgot password?
-                </Link>
+              </Link>
             </div>
           </div>
 
           {/* Login In Button */}
-          <button 
-
+          <button
             type="submit"
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
@@ -201,7 +207,7 @@ export const LoginPage = () => {
             >
               Sign up
             </Link>
-            <br/>
+            <br />
             <Link
               href={AUTH_ROUTES.ADMIN}
               className="font-medium text-green-600 hover:text-green-500"
