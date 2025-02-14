@@ -75,43 +75,19 @@
   ],
   "books": [
     {
-      "id": "1d13",
-      "title": "fairy tales",
-      "author": "sneha",
-      "isbn": "snow beauty",
-      "quantity": 7,
-      "status": "Available"
-    },
-    {
-      "id": "a291",
-      "title": "economics",
-      "author": "mr.yadav",
-      "isbn": "adsd",
-      "quantity": 7,
-      "status": "Available"
-    },
-    {
-      "id": "d120",
+      "id": "b855",
       "title": "horror book",
-      "author": "Anabelle",
-      "isbn": "ghost",
+      "author": "ghost",
+      "isbn": "sadfa",
       "quantity": 5,
       "status": "Available"
     },
     {
-      "id": "01a2",
-      "title": "Book 1 ",
-      "author": "Mr.X",
-      "isbn": "dddd66",
+      "id": "b675",
+      "title": "economics ",
+      "author": "geo",
+      "isbn": "affff",
       "quantity": 6,
-      "status": "Available"
-    },
-    {
-      "id": "f9e5",
-      "title": "funny book",
-      "author": "mr.Gada",
-      "isbn": "comedy",
-      "quantity": 8,
       "status": "Available"
     }
   ],
@@ -223,6 +199,87 @@
       "ISBN": "abcsss",
       "issueDate": "2025-02-06",
       "dueDate": ""
+    },
+    {
+      "id": "da37",
+      "userId": "026c",
+      "userName": "sukhjot kaur",
+      "bookName": "horror book",
+      "ISBN": "ghost",
+      "issueDate": "2025-02-14",
+      "dueDate": "2025-02-26"
+    },
+    {
+      "id": "fe87",
+      "userId": "a8bc",
+      "userName": "Divya Jaiswal  DJ",
+      "bookName": "horror book",
+      "ISBN": "ghost",
+      "issueDate": "2025-02-14",
+      "dueDate": "2025-02-25"
+    },
+    {
+      "id": "97c1",
+      "userId": "a8bc",
+      "userName": "Divya Jaiswal  DJ",
+      "bookName": "horror book",
+      "ISBN": "ghost",
+      "issueDate": "2025-02-14",
+      "dueDate": ""
+    },
+    {
+      "id": "3f16",
+      "userId": "a8bc",
+      "userName": "Divya Jaiswal  DJ",
+      "bookName": "fairy tales",
+      "ISBN": "snow beauty",
+      "issueDate": "2025-02-14",
+      "dueDate": "2025-02-27"
+    },
+    {
+      "id": "1c15",
+      "userId": "026c",
+      "userName": "sukhjot kaur",
+      "bookName": "funny book",
+      "ISBN": "comedy",
+      "issueDate": "2025-02-14",
+      "dueDate": "2025-02-28"
+    },
+    {
+      "id": "0852",
+      "userId": "986c",
+      "userName": "Anjali Joshii",
+      "bookName": "Book 1 ",
+      "ISBN": "dddd66",
+      "issueDate": "2025-02-14",
+      "dueDate": "2025-02-21"
+    },
+    {
+      "id": "bae0",
+      "userId": "986c",
+      "userName": "Anjali Joshii",
+      "bookName": "horror book",
+      "ISBN": "ghost",
+      "issueDate": "2025-02-14",
+      "dueDate": "2025-02-28"
+    },
+    {
+      "id": "c566",
+      "userId": "66c2",
+      "userName": "Shivani Bhadoriya",
+      "bookName": "horror book",
+      "ISBN": "ghost",
+      "issueDate": "2025-02-14",
+      "dueDate": "2025-02-28"
+    },
+    {
+      "id": "682d",
+      "userId": "92de",
+      "userName": "nidhi yadavv",
+      "bookName": "fairy tales",
+      "ISBN": "snow beauty",
+      "issueDate": "2025-02-14",
+      "dueDate": "2025-02-24"
     }
   ]
 }
