@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AUTH_ROUTES } from "@/constants/auth";
 
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchBook, addBook, updateBook, deleteBook } from "@/store/slice/adminSlice";
+
+import { z } from "zod";
+
 interface Book {
   id: number;
   title: string;
@@ -12,6 +18,14 @@ interface Book {
   quantity: number;
   status: string;
 }
+
+//zod validation schema
+const bookSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  author: z.string().min(1, "Author is required"),
+  isbn: z.string().min(1, "ISBN is required"),
+  quantity: z.number().min(1, "Quantity must be greater than 0"),
+});
 
 const AdminDashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -39,27 +53,37 @@ const AdminDashboard = () => {
 
   const [books, setBooks] = useState<Book[]>([]);
 
-  const fetchBooks = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/books");
-      const data: Book[] = await response.json();
-      setBooks(data);
-    } catch (error) {
-      console.error("Error fetching books:", error);
-    }
-  };
+  // const fetchBooks = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:3001/books");
+  //     const data: Book[] = await response.json();
+  //     setBooks(data);
+  //   } catch (error) {
+  //     console.error("Error fetching books:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchBooks();
+  // }, []);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const bookss = useSelector((state: RootState) => state.adminSlice.book);
 
   useEffect(() => {
-    fetchBooks();
-  }, []);
+    dispatch(fetchBook());
+  }, [dispatch]);
+  useEffect(() => {
+    console.log("Fetched books from Redux:", bookss);
+  }, [bookss]);
 
   //search logic
   const handleSearch = (e: any) => {
     setSearchQuery(e.target.value.toLowerCase());
   };
 
-  const filteredBooks = books
-    .filter(
+  const filteredBooks = bookss
+    ?.filter(
       (book) =>
         book.title.toLowerCase().includes(searchQuery) ||
         book.author.toLowerCase().includes(searchQuery) ||
@@ -75,10 +99,9 @@ const AdminDashboard = () => {
         b.author.toLowerCase().includes(searchQuery) ||
         b.isbn.includes(searchQuery);
 
-      // If one book exactly matches the query, come upside
       if (aMatch && !bMatch) return -1;
       if (!aMatch && bMatch) return 1;
-      return 0; // Keep the order if both match the same way
+      return 0;
     });
 
   const handleAddBookToggle = () => {
@@ -103,56 +126,95 @@ const AdminDashboard = () => {
   };
 
   const handleAddBook = async () => {
-    const bookData = { ...newBook, id: undefined }; //by id: undefined , json-server automatically generates id to book
+    //     const result = bookSchema.safeParse(newBook);
+    // //agr condition fullfill nhi hogi , then alert
+    //     if (!result.success) {
+    //       alert(result.error.errors.map((err) => err.message).join(", "));
+    //       return;
+    //     }
 
+    // const bookData = { ...newBook, id: undefined };
     try {
-      const response = await fetch("http://localhost:3001/books", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bookData),
-      });
+      // const response = await fetch("http://localhost:3001/books", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(bookData),
+      // });
 
-      if (response.ok) {
-        fetchBooks(); // Refresh book list
-        setIsFormOpen(false);
-        setNewBook({
-          id: 0,
-          title: "",
-          author: "",
-          isbn: "",
-          quantity: 0,
-          status: "Available",
-        });
-      }
+      // if (response.ok) {
+      //   dispatch(fetchBook()); // Refresh book list
+      //   setIsFormOpen(false);
+      //   setNewBook({
+      //     id: 0,
+      //     title: "",
+      //     author: "",
+      //     isbn: "",
+      //     quantity: 0,
+      //     status: "Available",
+      //   });
+      // }
+
+      const resultAction = await dispatch(addBook(newBook)).unwrap();
+      alert("Book added successfully!");
+      setIsFormOpen(false);
+      setNewBook({
+        id: 0,
+        title: "",
+        author: "",
+        isbn: "",
+        quantity: 0,
+        status: "Available",
+      });
     } catch (error) {
       console.error("Error adding book:", error);
     }
   };
 
   const handleUpdateBook = async () => {
-    if (currentBookId === null) return; // Ensure  ID exists
-
-    try {
-      const response = await fetch(
-        `http://localhost:3001/books/${currentBookId}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newBook), // Send updated book
-        }
-      );
-
-      if (response.ok) {
-        fetchBooks();
-        setIsFormOpen(false);
-        setIsEditing(false);
-        setCurrentBookId(null);
-        alert("Book updated");
-      }
-    } catch (error) {
-      console.error("Error updating book:", error);
+    if (!currentBookId) {
+      console.error("Error: No book ID provided for update.");
+      alert("Error: No book selected for update.");
+      return;
     }
+    
+    try {
+      // const response = await fetch(
+      //   `http://localhost:3001/books/${currentBookId}`,
+      //   {
+      //     method: "PUT",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(newBook), // Send updated book
+      //   }
+      // );
+
+      // if (response.ok) {
+      //   dispatch(fetchBook());
+      //   setIsFormOpen(false);
+      //   setIsEditing(false);
+      //   setCurrentBookId(null);
+      //   alert("Book updated");
+      // }
+
+      const updatedBook = {
+        ...newBook, // Assuming newBook contains the updated values
+        id: currentBookId, // Ensure the correct ID is passed
+      };
+      
+
+      await dispatch(updateBook({ bookId: currentBookId, updatedBook })).unwrap();
+
+      alert("Book updated");
+      setIsFormOpen(false);
+      setIsEditing(false);
+      setCurrentBookId(null);
+    } catch (error: any) {
+      console.error("An error occurred:", error);
+      alert(error?.message || "Failed to update the book. Please try again.");
+    }
+    
+  
   };
+
 
   const handleCancel = () => {
     setNewBook({
@@ -174,22 +236,23 @@ const AdminDashboard = () => {
     setCurrentBookId(book.id);
   };
   const handleDeleteBook = async (id: number) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this book?"
-    );
-    if (!confirmDelete) return;
-    try {
-      const response = await fetch(`http://localhost:3001/books/${id}`, {
-        method: "DELETE",
-      });
+    // const confirmDelete = window.confirm(
+    //   "Are you sure you want to delete this book?"
+    // );
+    // if (!confirmDelete) return;
+    // try {
+    //   const response = await fetch(`http://localhost:3001/books/${id}`, {
+    //     method: "DELETE",
+    //   });
 
-      if (response.ok) {
-        setBooks(books.filter((book) => book.id !== id));
-        alert("Book deleted successfully");
-      }
-    } catch (error) {
-      console.error("Error deleting book:", error);
-    }
+    //   if (response.ok) {
+    //     setBooks(books.filter((book) => book.id !== id));
+    //     alert("Book deleted successfully");
+    //   }
+
+    // } 
+ dispatch(deleteBook(id))
+ dispatch(fetchBook());
   };
 
   //form open of issue button
@@ -204,7 +267,7 @@ const AdminDashboard = () => {
   };
 
   //user search for issueing-book
-  const [userSearchQuery, setUserSearchQuery] = useState(""); //admin input
+  const [userSearchQuery, setUserSearchQuery] = useState(""); 
   const [searchedUser, setSearchedUser] = useState<{
     id: number;
     fullName: string;
@@ -244,7 +307,7 @@ const AdminDashboard = () => {
       alert("You have to create the account first!");
       return;
     }
-
+                              
     // Find the book in the list
     const bookToIssue = books.find((book) => book.isbn === issueDetails.ISBN);
 
@@ -289,7 +352,7 @@ const AdminDashboard = () => {
         setIsIssueFormOpen(false);
         setUserSearchQuery(""); // Reset search input
         setSearchedUser(null);
-        fetchBooks(); // Refresh book list
+        dispatch(fetchBook()); // Refresh book list
       }
     } catch (error) {
       console.error("Error issuing book:", error);
@@ -298,9 +361,12 @@ const AdminDashboard = () => {
 
   //Navigate to the user-screen
   const router = useRouter();
-  const handleUserNavigation = () =>{
-    router.push(AUTH_ROUTES.USER_DETAILS)
-  }
+  const handleUserNavigation = () => {
+    router.push(AUTH_ROUTES.USER_DETAILS);
+  };
+
+  // filtered users from the dropdown of the search input field
+  // const[filteredUser, setFilteredUser] = useState([])
 
   return (
     <div className="container mx-auto p-6">
@@ -320,10 +386,14 @@ const AdminDashboard = () => {
         onChange={handleSearch}
       />
 
-      <button onClick={handleUserNavigation}
-       className="bg-pink-400 text-white px-6 py-2 rounded-lg hover:bg-pink-500 transition-all mb-4 fixed top-4 right-4">
+      <button
+        onClick={handleUserNavigation}
+        className="bg-pink-400 text-white px-6 py-2 rounded-lg hover:bg-pink-500 transition-all mb-4 fixed top-4 right-4"
+      >
         See All Users
       </button>
+
+      {/* add book form validation via zod */}
 
       {isFormOpen && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
@@ -377,6 +447,13 @@ const AdminDashboard = () => {
                 />
               </label>
               <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="bg-gray-500 text-white px-6 py-2 rounded-lg"
+                >
+                  Cancel
+                </button>
                 {isEditing ? (
                   <button
                     type="button"
@@ -394,13 +471,6 @@ const AdminDashboard = () => {
                     Add Book
                   </button>
                 )}
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="bg-gray-500 text-white px-6 py-2 rounded-lg"
-                >
-                  Cancel
-                </button>
               </div>
             </form>
           </div>

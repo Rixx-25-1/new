@@ -1,51 +1,66 @@
+import { updatePassword } from "@/store/slice/forgetPasswordSlice";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
 
 export default function ForgetPasswordPage() {
+  const dispatch : AppDispatch= useDispatch();
+ 
+  const successMessage = useSelector(
+    (state: RootState) => state.forgetPasswordSlice.successMessage
+  );
+  
+  const error = useSelector(
+    (state:RootState) => state.forgetPasswordSlice.error
+  )
+
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const handleSubmit = async (e:any) => {
+  
+  const handleSubmit = async (e:any) => { 
     e.preventDefault();
-
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
+      alert("Passwords do not match");
       setSuccess("");
       return;
     }
+    
+      dispatch(updatePassword({email,newPassword}))
+      
+    // try {
+    //   const response = await fetch("http://localhost:3001/user");
+    //   const users = await response.json();
 
-    try {
-      const response = await fetch("http://localhost:3001/user");
-      const users = await response.json();
+    //   const userIndex = users.findIndex((user: any) => user.email === email);
 
-      const userIndex = users.findIndex((user: any) => user.email === email);
-
-      //agar index nhi mila to return back
-      if (userIndex === -1) {
-        alert("You need to create an account first.");
-        return;
-      }
+    //   //agar index nhi mila to return back
+    //   if (userIndex === -1) {
+    //     alert("You need to create an account first.");
+    //     setEmail('')
+    //     return;
+    //   }
 
       
-      users[userIndex].password = newPassword;
+    //   users[userIndex].password = newPassword;
 
     
-      await fetch("http://localhost:3001/user", {
-        method: "POST", 
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(users),
-      });
+    //   await fetch("http://localhost:3001/user", {
+    //     method: "POST", 
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(users),
+    //   });
 
-      setError("");
-      setSuccess("Password updated successfully!");
-    } catch (err) {
-      console.error("Error updating password:", err);
-      setError("Something went wrong, please try again.");
-    }
+    //   setError("");
+    //   setSuccess("Password updated successfully!");
+    // } catch (err) {
+    //   console.error("Error updating password:", err);
+    //   setError("Something went wrong, please try again.");
+    // }
   };
 
   return (
@@ -86,8 +101,8 @@ export default function ForgetPasswordPage() {
           />
         </div>
         {error && <p className="text-red-500">{error}</p>}
-        {success && <p className="text-green-500">{success}</p>}
-        <button type="submit" className="bg-blue-500 text-white p-2 w-full mt-4">
+        {successMessage && <p className="text-green-500">{successMessage}</p>}
+        <button  type="submit" className="bg-blue-500 text-white p-2 w-full mt-4">
           Submit
         </button>
       </form>
