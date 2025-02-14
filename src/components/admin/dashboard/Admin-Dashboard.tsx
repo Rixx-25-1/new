@@ -6,7 +6,15 @@ import { AUTH_ROUTES } from "@/constants/auth";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { fetchBook, addBook, updateBook, deleteBook } from "@/store/slice/adminSlice";
+import {
+  fetchBook,
+  addBook,
+  updateBook,
+  deleteBook,
+  searchBook,
+  issueBook,
+ 
+} from "@/store/slice/adminSlice";
 
 import { z } from "zod";
 
@@ -69,6 +77,8 @@ const AdminDashboard = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const bookss = useSelector((state: RootState) => state.adminSlice.book);
+
+  const { searchedUsers,usersSearchQuery} = useSelector((state:RootState)=>state.adminSlice)
 
   useEffect(() => {
     dispatch(fetchBook());
@@ -176,7 +186,7 @@ const AdminDashboard = () => {
       alert("Error: No book selected for update.");
       return;
     }
-    
+
     try {
       // const response = await fetch(
       //   `http://localhost:3001/books/${currentBookId}`,
@@ -199,9 +209,10 @@ const AdminDashboard = () => {
         ...newBook, // Assuming newBook contains the updated values
         id: currentBookId, // Ensure the correct ID is passed
       };
-      
 
-      await dispatch(updateBook({ bookId: currentBookId, updatedBook })).unwrap();
+      await dispatch(
+        updateBook({ bookId: currentBookId, updatedBook })
+      ).unwrap();
 
       alert("Book updated");
       setIsFormOpen(false);
@@ -211,10 +222,7 @@ const AdminDashboard = () => {
       console.error("An error occurred:", error);
       alert(error?.message || "Failed to update the book. Please try again.");
     }
-    
-  
   };
-
 
   const handleCancel = () => {
     setNewBook({
@@ -250,9 +258,10 @@ const AdminDashboard = () => {
     //     alert("Book deleted successfully");
     //   }
 
-    // } 
- dispatch(deleteBook(id))
- dispatch(fetchBook());
+    // }
+    dispatch(deleteBook(id));
+    dispatch(fetchBook())
+  
   };
 
   //form open of issue button
@@ -266,98 +275,112 @@ const AdminDashboard = () => {
     setIsIssueFormOpen(true);
   };
 
-  //user search for issueing-book
-  const [userSearchQuery, setUserSearchQuery] = useState(""); 
-  const [searchedUser, setSearchedUser] = useState<{
-    id: number;
-    fullName: string;
-  } | null>(null); // Stores matched user
+  // user search for issueing-book
+  const [userSearchQuery, setUserSearchQuery] = useState("");
+  // const [searchedUser, setSearchedUser] = useState<{
+  //   id: number;
+  //   fullName: string;
+  // } | null>(null); // Stores matched user
 
   const handleUserSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
     setUserSearchQuery(query);
+    console.log("query is",query)
 
     if (!query) {
-      setSearchedUser(null); // Reset if input is empty
       return;
     }
 
-    try {
-      const response = await fetch("http://localhost:3001/user");
-      const users = await response.json();
-      console.log(users);
+    dispatch(searchBook(query))
+    setUserSearchQuery("")
+    
+    // try {
+    //   const response = await fetch("http://localhost:3001/user");
+    //   const users = await response.json();
+    //   console.log(users);
 
-      const foundUser = users.find((user: { fullName: string }) =>
-        user.fullName.toLowerCase().includes(query)
-      );
+    //   const foundUser = users.find((user: { fullName: string }) =>
+    //     user.fullName.toLowerCase().includes(query)
+    //   );
 
-      if (foundUser) {
-        setSearchedUser(foundUser);
-      } else {
-        setSearchedUser(null);
-      }
-    } catch (error) {
-      console.error("Error searching user:", error);
-    }
+    //   if (foundUser) {
+    //     setSearchedUser(foundUser);
+    //   } else {
+    //     setSearchedUser(null);
+    //   }
+    // } catch (error) {
+    //   console.error("Error searching user:", error);
+    // }
   };
 
   //if the user exists the book detail and user will store in the db.json/issue-books
-  const handleIssueBook = async () => {
-    if (!searchedUser) {
-      alert("You have to create the account first!");
-      return;
-    }
-                              
-    // Find the book in the list
-    const bookToIssue = books.find((book) => book.isbn === issueDetails.ISBN);
+  // const handleIssueBook = async () => {
+  //   // if (!searchedUsers) {
+  //   //   alert("You have to create the account first!");
+  //   //   return;
+  //   // }
 
-    if (!bookToIssue) {
-      alert("Book not found!");
-      return;
-    }
+  //   // // Find the book in the list
+  //   // const bookToIssue = bookss.find((book) => book.isbn === issueDetails.ISBN);
 
-    if (bookToIssue.quantity <= 0) {
-      alert("Book is out of stock!");
-      return;
-    }
+  //   // if (!bookToIssue) {
+  //   //   alert("Book not found!");
+  //   //   return;
+  //   // }
 
-    const issueData = {
-      userId: searchedUser.id,
-      userName: searchedUser.fullName,
-      bookName: issueDetails.bookName,
-      ISBN: issueDetails.ISBN,
-      issueDate: issueDetails.issueDate,
-      dueDate: issueDetails.dueDate,
-    };
+  //   // if (bookToIssue.quantity <= 0) {
+  //   //   alert("Book is out of stock!");
+  //   //   return;
+  //   // }
 
-    try {
-      // Issue book (store in issue-books)
-      const response = await fetch("http://localhost:3001/issue-book", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(issueData),
-      });
+  //   // const issueData = {
+  //   //   userId: searchedUsers.id,
+  //   //   userName: searchedUsers.fullName,
+  //   //   bookName: issueDetails.bookName,
+  //   //   ISBN: issueDetails.ISBN,
+  //   //   issueDate: issueDetails.issueDate,
+  //   //   dueDate: issueDetails.dueDate,
+  //   // };
 
-      if (response.ok) {
-        // Reduce book quantity by 1
-        const updatedQuantity = bookToIssue.quantity - 1;
+  //   // try {
+  //   //   // Issue book (store in issue-books)
+  //   //   const response = await fetch("http://localhost:3001/issue-book", {
+  //   //     method: "POST",
+  //   //     headers: { "Content-Type": "application/json" },
+  //   //     body: JSON.stringify(issueData),
+  //   //   });
 
-        await fetch(`http://localhost:3001/books/${bookToIssue.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...bookToIssue, quantity: updatedQuantity }),
-        });
+  //   //   if (response.ok) {
+  //   //     // Reduce book quantity by 1
+  //   //     const updatedQuantity = bookToIssue.quantity - 1;
 
-        alert("Book issued successfully!");
-        setIsIssueFormOpen(false);
-        setUserSearchQuery(""); // Reset search input
-        setSearchedUser(null);
-        dispatch(fetchBook()); // Refresh book list
-      }
-    } catch (error) {
-      console.error("Error issuing book:", error);
-    }
-  };
+  //   //     await fetch(`http://localhost:3001/books/${bookToIssue.id}`, {
+  //   //       method: "PUT",
+  //   //       headers: { "Content-Type": "application/json" },
+  //   //       body: JSON.stringify({ ...bookToIssue, quantity: updatedQuantity }),
+  //   //     });
+
+  //       alert("Book issued successfully!");
+  //       setIsIssueFormOpen(false);
+  //       setSearchQuery(""); // Reset search input
+  //       // setSearchedUser(null);
+      
+       
+
+  //       dispatch(fetchBook()); // Refresh book list
+  //     }
+  //   } catch (error) {
+  //     console.error("Error issuing book:", error);
+  //   }
+  // };
+
+  const handleIssueBook =()=>{
+    dispatch(issueBook(issueDetails)).unwrap().then(()=>{
+      alert("Book Issued Successfully !!")
+      setIsIssueFormOpen(false)
+      setSearchQuery("")
+    })
+  }
 
   //Navigate to the user-screen
   const router = useRouter();
@@ -494,9 +517,9 @@ const AdminDashboard = () => {
                 />
               </label>
               {/* Show Found User */}
-              {searchedUser ? (
+              {searchedUsers ? (
                 <p className="text-green-600 mb-4">
-                  Selected: {searchedUser.fullName}
+                  Selected: {searchedUsers.fullName}
                 </p>
               ) : (
                 userSearchQuery && (
