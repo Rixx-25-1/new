@@ -26,9 +26,43 @@
     },
     {
       "id": "a8bc",
-      "fullName": "Divya Jaiswal ",
-       "email": "divyajaiswal1631@gmail.com",
+      "fullName": "Divya Jaiswal  DJ",
+      "email": "divyajaiswal1631@gmail.com",
       "password": "Divyajaiswal0206"
+    },
+    {
+      "id": "aa69",
+      "fullName": "divya jaiswal 2",
+      "email": "divyajaiswal131@gmail.com",
+      "password": "@Divyajaiswal"
+    },
+    {
+      "id": "d836",
+      "fullName": "mohit jagatiya",
+      "email": "mohit@mail.com",
+      "password": "mjP@ssw0rd"
+    },
+    {
+      "id": "a35e",
+      "fullName": "Anjali singh",
+      "email": "singhanjali@gmail.com",
+      "password": "P@ssw0rdd",
+      "confirmPassword": "",
+      "acceptTerms": false
+    },
+    {
+      "id": "026c",
+      "fullName": "sukhjot kaur",
+      "email": "kaursukhjot@gmail.com",
+      "password": "P@ssw0rd",
+      "confirmPassword": "",
+      "acceptTerms": false
+    },
+    {
+      "id": "0b13",
+      "fullName": "sdasdad",
+      "email": "sasdasda@gmail.com",
+      "password": "sadasda"
     }
   ],
   "admin": [
@@ -41,43 +75,43 @@
   ],
   "books": [
     {
-      "id": "f635",
-      "title": "book1",
-      "author": "divyaajaiswal",
-      "isbn": "abcsss",
-      "quantity": 8,
-      "status": "Available"
-    },
-    {
-      "id": "d706",
-      "title": "fiction book",
-      "author": "Mr.X",
-      "isbn": "1234",
-      "quantity": 6,
-      "status": "Available"
-    },
-    {
-      "id": "11c0",
-      "title": "Horror Book",
-      "author": "Anabelle",
-      "isbn": "ghost",
-      "quantity": 3,
-      "status": "Available"
-    },
-    {
-      "id": "50d7",
-      "title": "Funny Book",
-      "author": "John",
-      "isbn": "joker",
+      "id": "1d13",
+      "title": "fairy tales",
+      "author": "sneha",
+      "isbn": "snow beauty",
       "quantity": 7,
       "status": "Available"
     },
     {
-      "id": "4e7d",
-      "title": "comdey",
+      "id": "a291",
+      "title": "economics",
+      "author": "mr.yadav",
+      "isbn": "adsd",
+      "quantity": 7,
+      "status": "Available"
+    },
+    {
+      "id": "d120",
+      "title": "horror book",
+      "author": "Anabelle",
+      "isbn": "ghost",
+      "quantity": 5,
+      "status": "Available"
+    },
+    {
+      "id": "01a2",
+      "title": "Book 1 ",
+      "author": "Mr.X",
+      "isbn": "dddd66",
+      "quantity": 6,
+      "status": "Available"
+    },
+    {
+      "id": "f9e5",
+      "title": "funny book",
       "author": "mr.Gada",
-      "isbn": "tmkoc",
-      "quantity": 13,
+      "isbn": "comedy",
+      "quantity": 8,
       "status": "Available"
     }
   ],
@@ -126,6 +160,69 @@
       "ISBN": "1234",
       "issueDate": "2025-02-05",
       "dueDate": "2025-02-25"
+    },
+    {
+      "id": "d42c",
+      "userId": "a8bc",
+      "userName": "Divya Jaiswal ",
+      "bookName": "fairy tales",
+      "ISBN": "snow beauty",
+      "issueDate": "2025-02-05",
+      "dueDate": ""
+    },
+    {
+      "id": "7ac3",
+      "userId": "8cbc",
+      "userName": "mohit",
+      "bookName": "Horror Book",
+      "ISBN": "ghost",
+      "issueDate": "2025-02-05",
+      "dueDate": ""
+    },
+    {
+      "id": "cc15",
+      "userId": "cd0b",
+      "userName": "mohit",
+      "bookName": "fiction book",
+      "ISBN": "1234",
+      "issueDate": "2025-02-06",
+      "dueDate": ""
+    },
+    {
+      "id": "4105",
+      "userId": "cd0b",
+      "userName": "mohit",
+      "bookName": "book1",
+      "ISBN": "abcsss",
+      "issueDate": "2025-02-06",
+      "dueDate": ""
+    },
+    {
+      "id": "d8d6",
+      "userId": "cd0b",
+      "userName": "mohit",
+      "bookName": "book1",
+      "ISBN": "abcsss",
+      "issueDate": "2025-02-06",
+      "dueDate": "2025-02-25"
+    },
+    {
+      "id": "7114",
+      "userId": "0990",
+      "userName": "mohit1",
+      "bookName": "fiction book",
+      "ISBN": "1234",
+      "issueDate": "2025-02-06",
+      "dueDate": "2025-02-18"
+    },
+    {
+      "id": "732e",
+      "userId": "cd0b",
+      "userName": "mohit",
+      "bookName": "book1",
+      "ISBN": "abcsss",
+      "issueDate": "2025-02-06",
+      "dueDate": ""
     }
   ]
 }

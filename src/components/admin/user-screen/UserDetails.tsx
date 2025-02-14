@@ -4,15 +4,23 @@ import { AUTH_ROUTES } from "@/constants/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { UseSelector, useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+
+import {  createUser, fetchUsers, updateUser } from "@/store/slice/userSlice";
+
 interface User {
   fullName: string;
-  id?: number;
+  id?: number|undefined; 
   email?: string;
   password?: string;
 }
 
 const UserDetails = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const dispatch : AppDispatch= useDispatch();
+  const users = useSelector((state:RootState)=>state.api.users)
+
+  // const [tempusers, setTempUsers] = useState<User[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [newUser, setNewUser] = useState<User>({
     fullName: "",
@@ -21,22 +29,26 @@ const UserDetails = () => {
   });
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/user");
-        if (response.ok) {
-          const data: User[] = await response.json();
-          setUsers(data);
-        } else {
-          console.error("Failed to fetch user data");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+    // const fetchUsers = async () => {
+    //   try {
+    //     const response = await fetch("http://localhost:3001/user");
+    //     if (response.ok) {
+    //       const data: User[] = await response.json();
+    //       setUsers(data);
+    //     } else {
+    //       console.error("Failed to fetch user data");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching user data:", error);
+    //   }
+    // };
 
-    fetchUsers();
-  }, []);
+    // fetchUsers();
+
+    dispatch(fetchUsers())
+  }, [dispatch]);
+
+  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,26 +62,34 @@ const UserDetails = () => {
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:3001/user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newUser),
-      });
 
-      if (response.ok) {
-        const createdUser = await response.json();
-        setUsers((prevUsers) => [...prevUsers, createdUser]);
-        setIsFormOpen(false);
-        setNewUser({ fullName: "", email: "", password: "" });
-      } else {
-        console.error("Failed to create user");
-      }
-    } catch (error) {
-      console.error("Error creating user:", error);
-    }
+    dispatch(createUser(newUser)).unwrap().then(()=>{
+      setIsFormOpen(false)
+      setNewUser({fullName:"", email:"", password:""})
+    }).catch((error)=>{
+      console.error("Error in creating user",error);
+    })
+
+    // try {
+    //   const response = await fetch("http://localhost:3001/user", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(newUser),
+    //   });
+
+    //   if (response.ok) {
+    //     const createdUser = await response.json();
+    //     setTempUsers((prevUsers) => [...prevUsers, createdUser]);
+    //     setIsFormOpen(false);
+    //     setNewUser({ fullName: "", email: "", password: "" });
+    //   } else {
+    //     console.error("Failed to create user");
+    //   }
+    // } catch (error) {
+    //   console.error("Error creating user:", error);
+    // }
   };
 
   const [editUser, setEditUser] = useState<User | null>(null);
@@ -77,41 +97,47 @@ const UserDetails = () => {
   const handleEditClick = (user: User) => {
     setEditUser(user);
     setIsFormOpen(true);
-  };
+  }; 
 
   const handleUpdateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editUser) {
-      try {
-        const response = await fetch(`http://localhost:3001/user/${editUser.id}`);
-        if (!response.ok) {
-          console.error("Failed to fetch existing user details");
-          return;
-        }
 
-        const existingUser = await response.json();
-        const updatedData = { ...existingUser, fullName: editUser.fullName };
-
-        const updateResponse = await fetch(`http://localhost:3001/user/${editUser.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedData),
-        });
-
-        if (updateResponse.ok) {
-          const updatedUser = await updateResponse.json();
-          setUsers((prevUsers) =>
-            prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
-          );
-          setIsFormOpen(false);
-          setEditUser(null);
-        } else {
-          console.error("Failed to update user");
-        }
-      } catch (error) {
-        console.error("Error updating user:", error);
-      }
+    if(editUser){
+      dispatch(updateUser(editUser))
+      setEditUser(null)
+      setIsFormOpen(false)
     }
+    // if (editUser) {
+    //   try {
+    //     const response = await fetch(`http://localhost:3001/user/${editUser.id}`);
+    //     if (!response.ok) {
+    //       console.error("Failed to fetch existing user details");
+    //       return;
+    //     }
+
+    //     const existingUser = await response.json();
+    //     const updatedData = { ...existingUser, fullName: editUser.fullName };
+
+    //     const updateResponse = await fetch(`http://localhost:3001/user/${editUser.id}`, {
+    //       method: "PUT",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify(updatedData),
+    //     });
+
+    //     if (updateResponse.ok) {
+    //       const updatedUser = await updateResponse.json();
+    //       setTempUsers((prevUsers) =>
+    //         prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+    //       );
+    //       setIsFormOpen(false);
+    //       setEditUser(null);
+    //     } else {
+    //       console.error("Failed to update user");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error updating user:", error);
+    //   }
+    // }
   };
 
   const router = useRouter();

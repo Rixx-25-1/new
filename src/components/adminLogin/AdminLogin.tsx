@@ -2,37 +2,58 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";  
 import Link from "next/link";
-import { validateAdmin } from "@/utils/api";  
+// import { validateAdmin } from "@/utils/api";  
 import { AUTH_ROUTES } from "@/constants/auth";
-
-
+import { AppDispatch,RootState } from "@/store/store";
+import {validateAdminn} from '@/store/slice/validateSlice'
+import { useDispatch } from "react-redux";
+ 
 
 
 const AdminLoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [error, setError] = useState("");  
   const router = useRouter();
+
+  const dispatch:AppDispatch = useDispatch()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate admin login
-    const result = await validateAdmin(email, password);
+    // // Validate admin login
+    // const result = await validateAdmin(email, password);
 
-    if (result.success) {
+    // if (result.success) {
       
-      alert(`Login Successful for ${result.admin.email}`);
-      // router.push(AUTH_ROUTES.DASHBOARD);// //yeh kam nhi kr rha h 
-      router.push(AUTH_ROUTES.ADMIN_DASHBOARD)
+   
+    //   // router.push(AUTH_ROUTES.DASHBOARD);// //yeh kam nhi kr rha h 
+    //   router.push(AUTH_ROUTES.ADMIN_DASHBOARD)
      
          
-    alert('Admin login successfully')
-    } else {
+
+    // } else {
       
-      setError('Inavlid email or password entered');
+    //   setError('Inavlid email or password entered');
+    //   setPassword("")
+    //   setEmail("")
+     
+    // }
+    try {
+      const result = await dispatch(validateAdminn({ email, password })).unwrap();
+
+      if (result) {
+        router.push(AUTH_ROUTES.ADMIN_DASHBOARD);
+      }
+    } catch (err) {
+      // console.error(err);
+      setError( err as string)
+      // alert(err || "Invalid email or password");
+      setEmail("");
+      setPassword("");
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
@@ -96,6 +117,6 @@ const AdminLoginPage = () => {
       </div>
     </div>
   );
-};
+}
 
 export default AdminLoginPage;
