@@ -1,0 +1,18 @@
+# Use Node.js image
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy db.json and package.json
+COPY package.json ./
+COPY db.json ./db.json
+
+# Install JSON server
+RUN npm install -g json-server
+
+# Expose port 3001
+EXPOSE 3001
+
+# Run JSON server
+CMD ["json-server", "--watch", "db.json", "--port", "3001"]
