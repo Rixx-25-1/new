@@ -2,17 +2,17 @@ version: '3.8'
 
 services:
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
+    image: new-folder-name-frontend
+    container_name: frontend-container
     ports:
       - "3000:3000"
     depends_on:
       - json-server
+    restart: always
 
   json-server:
-    build:
-      context: .
-      dockerfile: Dockerfile.json
+    image: new-folder-name-json-server
+    container_name: json-container
     ports:
       - "3001:3001"
+    restart: always
