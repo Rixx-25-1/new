@@ -6,19 +6,19 @@ import { z } from "zod"; // Zod validation import
 import { ERROR_MESSAGES, AUTH_ROUTES } from "@/constants/auth";
 // import { validateUser } from "@/utils/api";
 import { AppDispatch, RootState } from "@/store/store";
-
+ 
 import { validateUsers } from "@/store/slice/validateSlice";
 import { useDispatch } from "react-redux";
-
+ 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+ 
   const router = useRouter();
-
+ 
   const dispatch : AppDispatch = useDispatch()
-
+ 
   // Zod schema for login form validation
   const loginSchema = z.object({
     email: z.string().email({ message: ERROR_MESSAGES.INVALID_EMAIL }),
@@ -26,13 +26,13 @@ export const LoginPage = () => {
       .string()
       .min(8, { message: ERROR_MESSAGES.PASSWORD_TYPE  }),
   });
-
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+ 
     // Validate form data using Zod
     const result = loginSchema.safeParse({ email, password }); // "safe" parsing (doesn't throw error if validation fails)
-
+ 
     if (!result.success) {
       const validationErrors = result.error.format();
       setError(
@@ -41,11 +41,11 @@ export const LoginPage = () => {
         "Invalid input"
       );
       return;
-    } 
-
-    // Clear previous error msgs 
+    }
+ 
+    // Clear previous error msgs
     setError("");
-
+ 
     dispatch(validateUsers({ email, password }))
     .unwrap()
     .then((user) => {
@@ -56,9 +56,9 @@ export const LoginPage = () => {
     })
     .catch((err) => setError(err || "Invalid email or password entered"));
 };
-
+ 
   //   const validationResult = await validateUser(email, password);
-
+ 
   //   if (validationResult.success) {
   //     alert(`Login Successfully for ${validationResult.user.email}`);
   //     localStorage.setItem("userId", validationResult.user.id || "");
@@ -68,7 +68,7 @@ export const LoginPage = () => {
   //     setError("Invalid email or password entered");
   //   }
   // };
-
+ 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
@@ -79,7 +79,7 @@ export const LoginPage = () => {
             Please login to your account
           </p>
         </div>
-
+ 
         {/* Form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {/* Email Input */}
@@ -109,7 +109,7 @@ export const LoginPage = () => {
               )}
             </div>
           </div>
-
+ 
           {/* Password Input */}
           <div>
             <label
@@ -137,7 +137,7 @@ export const LoginPage = () => {
               )}
             </div>
           </div>
-
+ 
           {/* Remember Me and Forgot Password */}
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -154,7 +154,7 @@ export const LoginPage = () => {
                 Remember me
               </label>
             </div>
-
+ 
             <div className="text-sm">
               <Link
                 href={AUTH_ROUTES.FORGET}
@@ -164,7 +164,7 @@ export const LoginPage = () => {
               </Link>
             </div>
           </div>
-
+ 
           {/* Login Button */}
           <button
             type="submit"
@@ -173,7 +173,7 @@ export const LoginPage = () => {
             Log in
           </button>
         </form>
-
+ 
         {/* Sign Up Section */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
@@ -197,3 +197,4 @@ export const LoginPage = () => {
     </div>
   );
 };
+ 
