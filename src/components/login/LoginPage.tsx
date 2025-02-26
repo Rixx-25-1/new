@@ -4,35 +4,30 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod"; // Zod validation import
 import { ERROR_MESSAGES, AUTH_ROUTES } from "@/constants/auth";
-// import { validateUser } from "@/utils/api";
-import { AppDispatch, RootState } from "@/store/store";
- 
+import { AppDispatch } from "@/store/store";
 import { validateUsers } from "@/store/slice/validateSlice";
 import { useDispatch } from "react-redux";
- 
+
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
- 
+  const [error, setError] = useState<string>("");
+
   const router = useRouter();
- 
-  const dispatch : AppDispatch = useDispatch()
- 
+  const dispatch: AppDispatch = useDispatch();
+
   // Zod schema for login form validation
   const loginSchema = z.object({
     email: z.string().email({ message: ERROR_MESSAGES.INVALID_EMAIL }),
-    password: z
-      .string()
-      .min(8, { message: ERROR_MESSAGES.PASSWORD_TYPE  }),
+    password: z.string().min(8, { message: ERROR_MESSAGES.PASSWORD_TYPE }),
   });
- 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
- 
+
     // Validate form data using Zod
-    const result = loginSchema.safeParse({ email, password }); // "safe" parsing (doesn't throw error if validation fails)
- 
+    const result = loginSchema.safeParse({ email, password });
+
     if (!result.success) {
       const validationErrors = result.error.format();
       setError(
@@ -42,33 +37,21 @@ export const LoginPage = () => {
       );
       return;
     }
- 
-    // Clear previous error msgs
+
+    // Clear previous error messages
     setError("");
- 
+
     dispatch(validateUsers({ email, password }))
-    .unwrap()
-    .then((user) => {
-      alert(`Login Successfully for ${user.email}`);
-      localStorage.setItem("userId", user.id || "");
-      localStorage.setItem("username", user.fullName || "");
-      router.push(AUTH_ROUTES.USER_DASHBOARD);
-    })
-    .catch((err) => setError(err || "Invalid email or password entered"));
-};
- 
-  //   const validationResult = await validateUser(email, password);
- 
-  //   if (validationResult.success) {
-  //     alert(`Login Successfully for ${validationResult.user.email}`);
-  //     localStorage.setItem("userId", validationResult.user.id || "");
-  //     localStorage.setItem("username", validationResult.user.fullName || "");
-  //     router.push(AUTH_ROUTES.USER_DASHBOARD);
-  //   } else {
-  //     setError("Invalid email or password entered");
-  //   }
-  // };
- 
+      .unwrap()
+      .then((user) => {
+        alert(`Login Successfully for ${user.email}`);
+        localStorage.setItem("userId", user.id || "");
+        localStorage.setItem("username", user.fullName || "");
+        router.push(AUTH_ROUTES.USER_DASHBOARD);
+      })
+      .catch((err) => setError(err || "Invalid email or password entered"));
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
@@ -79,7 +62,7 @@ export const LoginPage = () => {
             Please login to your account
           </p>
         </div>
- 
+
         {/* Form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {/* Email Input */}
@@ -96,20 +79,19 @@ export const LoginPage = () => {
                 name="email"
                 type="email"
                 onChange={(e) => setEmail(e.target.value)}
-               
                 className={`appearance-none block w-full px-3 py-2 border ${
-                  error && error.includes("email")
+                  String(error).includes("email")
                     ? "border-red-500"
                     : "border-gray-300"
                 } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="abc@example.com"
               />
-              {error && error.includes("email") && (
+              {String(error).includes("email") && (
                 <p className="text-red-500 text-sm mt-1">{error}</p>
               )}
             </div>
           </div>
- 
+
           {/* Password Input */}
           <div>
             <label
@@ -124,20 +106,19 @@ export const LoginPage = () => {
                 name="password"
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
-             
                 className={`appearance-none block w-full px-3 py-2 border ${
-                  error && error.includes("Password")
+                  String(error).includes("Password")
                     ? "border-red-500"
                     : "border-gray-300"
                 } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="********"
               />
-              {error && error.includes("Password") && (
+              {String(error).includes("Password") && (
                 <p className="text-red-500 text-sm mt-1">{error}</p>
               )}
             </div>
           </div>
- 
+
           {/* Remember Me and Forgot Password */}
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -154,7 +135,7 @@ export const LoginPage = () => {
                 Remember me
               </label>
             </div>
- 
+
             <div className="text-sm">
               <Link
                 href={AUTH_ROUTES.FORGET}
@@ -164,7 +145,7 @@ export const LoginPage = () => {
               </Link>
             </div>
           </div>
- 
+
           {/* Login Button */}
           <button
             type="submit"
@@ -173,11 +154,11 @@ export const LoginPage = () => {
             Log in
           </button>
         </form>
- 
+
         {/* Sign Up Section */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link
               href={AUTH_ROUTES.SIGN_UP}
               className="font-medium text-blue-600 hover:text-blue-500"
@@ -197,4 +178,3 @@ export const LoginPage = () => {
     </div>
   );
 };
- 
